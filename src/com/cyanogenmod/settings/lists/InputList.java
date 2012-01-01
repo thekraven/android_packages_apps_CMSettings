@@ -16,12 +16,14 @@
 package com.cyanogenmod.settings.lists;
 
 import java.util.ArrayList;
+import com.cyanogenmod.settings.R;
+
 public class InputList extends MasterLists {
     public static ArrayList<MasterLists.List> mList = null;
 
     public InputList() {
         mList = new ArrayList<MasterLists.List>();
-        //mList.put(new MasterLists.List(ResID, ResID, Intent, Type));
+        mList.add(new MasterLists.List(R.string.title_input_nav, 0, "com.cyanogenmod.settings.activities.NavButtons", TYPE_NORMAL));
     }
 
     public ArrayList<MasterLists.List> getList() {

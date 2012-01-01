@@ -353,6 +353,11 @@
     <string name="pref_input_custom_long_search_app_toggle_summary">Starts a custom app when long-pressing the search key</string>
     <string name="pref_backtrack_title">BackTrack Minipad</string>
     <string name="pref_backtrack_summary">Enable/disable BackTrack Minipad</string>
+    <string name="title_input_nav">Onscreen controls</string>
+    <string name="title_nav_controls_order">Onscreen controls order</string>
+    <string name="summary_nav_controls_order">Order your onscreen navigation buttons</string>
+    <string name="title_nav_hide_search">Show search button</string>
+    <string name="summary_nav_hide_search">Show/hide search button in navigation</string>
 
     <!-- Long Press Menu -->
     <string name="long_press_menu_title">Long-press menu settings</string>

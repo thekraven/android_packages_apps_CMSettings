@@ -45,6 +45,19 @@
                 android:taskAffinity="com.cyanogenmod.settings">
         </activity>
 -->
+
+        <!-- Navigation Controls -->
+        <activity android:name=".activities.NavButtons"
+                android:label="@string/title_input_nav"
+                android:configChanges="orientation|keyboardHidden|screenSize"
+                android:clearTaskOnLaunch="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.cyanogenmod.WIDGET_SETTINGS" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
         <!-- Notification Widget -->
         <activity android:name=".activities.PowerWidget"
                 android:label="@string/title_widget_buttons"
