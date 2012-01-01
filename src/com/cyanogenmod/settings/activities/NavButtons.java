@@ -43,36 +43,34 @@ import android.widget.TextView;
 import com.cyanogenmod.settings.R;
 import com.cyanogenmod.settings.widgets.TouchInterceptor;
 
-public class NavButtons extends PreferenceActivity
-	implements OnPreferenceChangeListener {
-    private static final String SHOW_SEARCH = "show_search";
+public class NavButtons extends PreferenceActivity implements OnPreferenceChangeListener {
+
     private static final String DEFAULT_LAYOUT = "back|home|recent|search0";
+    private static final String SHOW_SEARCH = "show_search";
 
     private CheckBoxPreference mShowSearch;
-
     private PreferenceScreen mButtonOrder;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         if(getPreferenceManager() != null) {
             addPreferencesFromResource(R.xml.ui_nav_controls);
-
             PreferenceScreen prefSet = getPreferenceScreen();
-
-        /* Expanded View Power Widget */
-            mShowSearch = (CheckBoxPreference) prefSet.findPreference(SHOW_SEARCH);
             mButtonOrder = (PreferenceScreen) prefSet.findPreference("button_order");
-            mShowSearch.setChecked((Settings.System.getInt(getApplicationContext().getContentResolver(),
-                Settings.System.NAV_SHOW_SEARCH, 1) == 1));
+            mShowSearch = (CheckBoxPreference) prefSet.findPreference(SHOW_SEARCH);
+            String storedNav = Settings.System.getString(getApplicationContext().getContentResolver(),
+                    Settings.System.NAV_BUTTONS);
+            if (storedNav == null) {
+                storedNav = DEFAULT_LAYOUT;
+            }
+            mShowSearch.setChecked(storedNav.contains("search1"));
         }
     }
 
     public boolean onPreferenceChange(Preference preference, Object newValue) {
         return false;
     }
-
 
     public boolean startFragment(
             Fragment caller, String fragmentClass, int requestCode, Bundle extras) {
@@ -82,11 +80,9 @@ public class NavButtons extends PreferenceActivity
 
     public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
         boolean value;
-
         if(preference == mButtonOrder) {
             startFragment(null, mButtonOrder.getFragment(), -1, null);
         }
-
         if (preference == mShowSearch) {
             value = mShowSearch.isChecked();
             String stored = Settings.System.getString(getApplicationContext().getContentResolver(), Settings.System.NAV_BUTTONS);
@@ -97,7 +93,6 @@ public class NavButtons extends PreferenceActivity
             }
             Settings.System.putString(getApplicationContext().getContentResolver(), Settings.System.NAV_BUTTONS, stored);
         }
-
         return true;
     }
 
@@ -152,11 +147,11 @@ public class NavButtons extends PreferenceActivity
                         String button = buttons.remove(from);
                         if(to <= buttons.size()) {
                             buttons.add(to, button);
-                            String s = buttons.get(0);
+                            String toStore = buttons.get(0);
                             for(int i = 1; i < buttons.size(); i++) {
-                                s += "|" + buttons.get(i);
+                                toStore += "|" + buttons.get(i);
                             }
-                            Settings.System.putString(mContext.getContentResolver(), Settings.System.NAV_BUTTONS, s);
+                            Settings.System.putString(mContext.getContentResolver(), Settings.System.NAV_BUTTONS, toStore);
                             mButtonAdapter.reloadButtons();
                             mButtonList.invalidateViews();
                         }
@@ -216,16 +211,22 @@ public class NavButtons extends PreferenceActivity
                     }
                     final TextView name = (TextView)v.findViewById(R.id.name);
                     final ImageView icon = (ImageView)v.findViewById(R.id.icon);
-                    name.setText(mButtons.get(position));
+                    String curText = mButtons.get(position);
+                    if (curText.equals("search0")) {
+                        curText = "search(Off)";
+                    } else if (curText.equals("search1")){
+                        curText = "search(On)";
+                    }
+                    name.setText(curText);
                     String resName = null;
                     if (mButtons.get(position).equals("home")) {
                         resName = "com.android.systemui:drawable/ic_sysbar_home";
-                    }else if (mButtons.get(position).equals("search")) {
-                        resName = "com.android.systemui:drawable/ic_sysbar_search";
+                    }else if (mButtons.get(position).equals("recent")) {
+                        resName = "com.android.systemui:drawable/ic_sysbar_recent";
                     }else if (mButtons.get(position).equals("back")) {
                         resName = "com.android.systemui:drawable/ic_sysbar_back";
                     }else {
-                        resName = "com.android.systemui:drawable/ic_sysbar_recent";
+                        resName = "com.android.systemui:drawable/ic_sysbar_search";
                     }
                     icon.setVisibility(View.GONE);
                     if(mSystemUIResources != null) {
