@@ -86,6 +86,9 @@ public class NavButtons extends PreferenceActivity implements OnPreferenceChange
         if (preference == mShowSearch) {
             value = mShowSearch.isChecked();
             String stored = Settings.System.getString(getApplicationContext().getContentResolver(), Settings.System.NAV_BUTTONS);
+            if (stored == null) {
+                stored = DEFAULT_LAYOUT;
+            }
             if (value) {
                 stored = stored.replace("search0", "search1");
             } else {
